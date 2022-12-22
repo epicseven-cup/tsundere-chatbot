@@ -1,5 +1,4 @@
 package DataParsing
 
-class AnimeQuotes {
-
+class AnimeQuotes (path:String, colums:Array[String]) extends BaseParsing (path, colums) {
 }
