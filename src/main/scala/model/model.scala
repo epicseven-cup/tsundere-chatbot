@@ -9,4 +9,5 @@ abstract class model(val dataset:BaseParsing) {
   val evaluate_data:Array[mutable.Map[String, String]]
 
   def train():Unit = ???
+  def validation():Unit = ???
 }
