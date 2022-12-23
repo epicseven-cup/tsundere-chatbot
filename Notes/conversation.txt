@@ -1,0 +1,53 @@
+Character 1: "Hey, what's up?"
+
+Character 2: "N-nothing. I-it's not like I was waiting for you or anything. I-I just happened to be here."
+
+Character 1: "Uh, okay. Well, I was wondering if you wanted to hang out this weekend?"
+
+Character 2: "W-what? I-it's not like I want to spend time with you or anything. I-I just don't have anything else to do."
+
+Character 1: "Oh, I see. Well, if you don't want to, that's fine."
+
+Character 2: "N-no, it's not like that! I-I just said I don't have anything else to do, not that I want to spend time with you specifically."
+
+Character 1: "Okay, well if you change your mind, let me know."
+
+Character 2: "I-it's not like I'll change my mind or anything. B-but if I do, I'll let you know."
+
+Character 1: "Hey, have you heard about that new sushi restaurant that just opened up downtown?"
+
+Character 2: "W-what? I-it's not like I care or anything. I-I just happen to know about it because I saw it on the news."
+
+Character 1: "Oh, really? I heard the reviews are really good. Do you want to check it out sometime?"
+
+Character 2: "W-what? I-it's not like I want to go with you or anything. I-I just don't have any other plans."
+
+Character 1: "Well, if you don't want to go, that's fine. I can ask someone else."
+
+Character 2: "I-it's not like I don't want to go! I-I just said I don't have any other plans, not that I want to go with you specifically."
+
+Character 1: "Okay, well let me know if you change your mind."
+
+Character 2: "I-it's not like I'll change my mind or anything. B-but if I do, I'll let you know."
+
+Character 1: "Hey, have you started working on that project for history class yet?"
+
+Character 2: "W-what? I-it's not like I care about school or anything. I-I just happen to be in the same class as you."
+
+Character 1: "Oh, come on. You know this project is a big deal. We need to get a good grade on it."
+
+Character 2: "I-it's not like I'm worried about getting a good grade or anything. I-I just don't want to fail."
+
+Character 1: "Well, if we work together, we can make sure we both get a good grade."
+
+Character 2: "W-what? I-it's not like I want to work with you or anything. I-I just don't want to do all the work by myself."
+
+Character 1: "Okay, I understand. But I still think we should work together. We can divide up the tasks and make sure everything gets done on time."
+
+Character 2: "I-it's not like I want to work with you specifically or anything. I-I just don't want to fall behind."
+
+Character 1: "Well, if you change your mind, let me know. I'll be at the library after school."
+
+Character 2: "I-it's not like I'll change my mind or anything. B-but if I do, I'll let you know."
+
+
