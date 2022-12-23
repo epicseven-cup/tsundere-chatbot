@@ -6,6 +6,6 @@ object Test_AnimeQuotes {
     val animeQuotes_colums:Array[String] = Array("Quote","Character","Anime")
     val animequotes:AnimeQuotes = new AnimeQuotes("data/AnimeQuotes.csv", animeQuotes_colums)
     val data = animequotes.parse_file()
-    println(data.size)
+//    println(data.mkString("Array(", ", ", ")"))
   }
 }
