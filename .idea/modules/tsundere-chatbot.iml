@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/../../target" />
       <excludeFolder url="file://$MODULE_DIR$/../../project/target" />
       <excludeFolder url="file://$MODULE_DIR$/../../data" />
+      <excludeFolder url="file://$MODULE_DIR$/../../Notes/diagram" />
+      <excludeFolder url="file://$MODULE_DIR$/../../src/main/scala/DataParsing/sideDate" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
