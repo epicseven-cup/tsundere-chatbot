@@ -3,6 +3,7 @@ package DataParsing
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.collection.mutable
 import scala.io.Source
+import scala.util.Random
 
 class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
 
@@ -18,6 +19,14 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
   val validation_train:String = validation_path(2)
 
 
+  def unique_token_id(token_id_set:mutable.Set[Int]): Option[Int] = {
+    var random_id:Int = Random.nextInt()
+    while (token_id_set.contains(random_id)) {
+      random_id = Random.nextInt()
+    }
+    Option(random_id)
+  }
+
   def update_classificer(path:String, index:Int, data:mutable.Map[Int, Map[String, Array[Int]]], id:Int=0): mutable.Map[Int, Map[String, Array[Int]]] = {
     var input_id = id
     val output_data:mutable.Map[Int, Map[String, Array[Int]]] = data
@@ -25,12 +34,9 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     val current_file_lines = current_file.getLines()
     for (line <- current_file_lines) {
       val isolate_state:Array[String] = line.split(" ")
-
       // update the state
       for (state <- isolate_state) {
-//        println(state)
         output_data(input_id)("classifiers")(index)= state.toInt
-//        println(output_data(input_id)("classifiers")(index))
         input_id = input_id + 1
       }
     }
@@ -45,13 +51,14 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     var id:Int = 0
     val text_file_lines = text_file.getLines()
     // a tokenizer_dictionary
-    val tokenizer_dictionary:mutable.Map[String, Int] = mutable.Map()
-    // keeping track of id
-    var token_id:Int = 0
+    val tokenizer_dictionary:mutable.Map[String, Option[Int]] = mutable.Map()
+    // Set of token id
+    var token_id_set: mutable.Set[Int] = mutable.Set()
+    // keeping track of id with option wrapper
+    var token_id: Option[Int] = Option(Random.nextInt())
     // Put all the sentences input the map so I can mapp it later with different annothation
     for (line <- text_file_lines) {
       val sentences:Array[String] = line.split("__eou__")
-//      println(sentences.mkString("Array(", ", ", ")"))
 
       for(sentence_index <- sentences.indices){
         val isolated_words:Array[String] = sentences(sentence_index).split(" ")
@@ -59,12 +66,13 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
 
         for (word_index <- isolated_words.indices) {
           val word:String = isolated_words(word_index)
-          val token:Int = tokenizer_dictionary.getOrElse(word, token_id)
-          if (token == token_id){
-            tokenizer_dictionary(word) = token_id + 1
-            token_id = token_id + 1
+          val token:Option[Int] = tokenizer_dictionary.getOrElse(word, None)
+          if (token.isEmpty){
+            tokenizer_dictionary(word) = token_id
+            token_id_set = token_id_set + token_id.get
+            token_id = this.unique_token_id(token_id_set)
           }
-          tokenized_sentence(word_index) = tokenizer_dictionary(word)
+          tokenized_sentence(word_index) = tokenizer_dictionary(word).get
         }
         mapped_sentence(id) = Map ("classifiers" -> new Array[Int](2), "tokenized" -> tokenized_sentence)
         id = id + 1
@@ -98,7 +106,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     val write_dictionary = new File("data/ijcnlp_dailydialog/train/train/dictionary_data.txt")
     val write_dictionary_writer = new BufferedWriter(new FileWriter(write_dictionary))
     for ((key, value) <- tokenizer_dictionary){
-      val create_line:String = key + " -> " + value.toString + "\n"
+      val create_line:String = key + " -> " + value.get.toString + "\n"
       write_dictionary_writer.write(create_line)
     }
     write_dictionary_writer.close()
