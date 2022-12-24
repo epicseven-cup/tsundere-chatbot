@@ -19,54 +19,54 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
   val validation_train:String = validation_path(2)
 
 
-  def unique_token_id(token_id_set:mutable.Set[Int]): Option[Int] = {
-    var random_id:Int = Random.nextInt()
+  def unique_token_id(token_id_set:mutable.Set[Double]): Option[Double] = {
+    var random_id:Double = Random.nextDouble()
     while (token_id_set.contains(random_id)) {
       random_id = Random.nextInt()
     }
     Option(random_id)
   }
 
-  def update_classificer(path:String, index:Int, data:mutable.Map[Int, Map[String, Array[Int]]], id:Int=0): mutable.Map[Int, Map[String, Array[Int]]] = {
+  def update_classificer(path:String, index:Int, data:mutable.Map[Int, Map[String, Array[Double]]], id:Int=0): mutable.Map[Int, Map[String, Array[Double]]] = {
     var input_id = id
-    val output_data:mutable.Map[Int, Map[String, Array[Int]]] = data
+    val output_data:mutable.Map[Int, Map[String, Array[Double]]] = data
     val current_file = Source.fromFile(path)
     val current_file_lines = current_file.getLines()
     for (line <- current_file_lines) {
       val isolate_state:Array[String] = line.split(" ")
       // update the state
       for (state <- isolate_state) {
-        output_data(input_id)("classifiers")(index)= state.toInt
+        output_data(input_id)("classifiers")(index)= state.toDouble
         input_id = input_id + 1
       }
     }
     current_file.close()
     output_data
   }
-  def train_data_parsing(): mutable.Map[Int, Map[String, Array[Int]]] = {
+  def train_data_parsing(): mutable.Map[Int, Map[String, Array[Double]]] = {
 
     val text_file = Source.fromFile(this.dialog_train)
-    val mapped_sentence:mutable.Map[Int, Map[String, Array[Int]]] = mutable.Map()
+    val mapped_sentence:mutable.Map[Int, Map[String, Array[Double]]] = mutable.Map()
     // sentence id
     var id:Int = 0
     val text_file_lines = text_file.getLines()
     // a tokenizer_dictionary
-    val tokenizer_dictionary:mutable.Map[String, Option[Int]] = mutable.Map()
+    val tokenizer_dictionary:mutable.Map[String, Option[Double]] = mutable.Map()
     // Set of token id
-    var token_id_set: mutable.Set[Int] = mutable.Set()
+    var token_id_set: mutable.Set[Double] = mutable.Set()
     // keeping track of id with option wrapper
-    var token_id: Option[Int] = Option(Random.nextInt())
+    var token_id: Option[Double] = Option(Random.nextDouble())
     // Put all the sentences input the map so I can mapp it later with different annothation
     for (line <- text_file_lines) {
       val sentences:Array[String] = line.split("__eou__")
 
       for(sentence_index <- sentences.indices){
         val isolated_words:Array[String] = sentences(sentence_index).split(" ")
-        val tokenized_sentence:Array[Int] = new Array[Int](isolated_words.length)
+        val tokenized_sentence:Array[Double] = new Array[Double](isolated_words.length)
 
         for (word_index <- isolated_words.indices) {
           val word:String = isolated_words(word_index)
-          val token:Option[Int] = tokenizer_dictionary.getOrElse(word, None)
+          val token:Option[Double] = tokenizer_dictionary.getOrElse(word, None)
           if (token.isEmpty){
             tokenizer_dictionary(word) = token_id
             token_id_set = token_id_set + token_id.get
@@ -74,7 +74,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
           }
           tokenized_sentence(word_index) = tokenizer_dictionary(word).get
         }
-        mapped_sentence(id) = Map ("classifiers" -> new Array[Int](2), "tokenized" -> tokenized_sentence)
+        mapped_sentence(id) = Map ("classifiers" -> new Array[Double](2), "tokenized" -> tokenized_sentence)
         id = id + 1
       }
     }
@@ -94,13 +94,11 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
       var compute_value: String = ""
       for ((k_value, v_value) <- value) {
         compute_value = k_value + " -> " + v_value.mkString("Array(", ", ", ")") + " " +compute_value
-//        println(k_value)
       }
       val create_line:String = key.toString + " -> " + compute_value + "\n"
       write_buffer.write(create_line)
     }
     write_buffer.close()
-
 
     // Write dictionary
     val write_dictionary = new File("data/ijcnlp_dailydialog/train/train/dictionary_data.txt")
@@ -110,7 +108,6 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
       write_dictionary_writer.write(create_line)
     }
     write_dictionary_writer.close()
-
     emotion_data
   }
   def validation_data_parsing(): mutable.Map[String, Int] = ???
