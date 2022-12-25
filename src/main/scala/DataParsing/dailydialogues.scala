@@ -4,14 +4,21 @@ import java.io.{BufferedWriter, File, FileWriter}
 import scala.collection.mutable
 import scala.io.Source
 import scala.util.Random
+import play.api.libs.json.{JsValue, Json}
+
 
 class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
+
+  if (train_path.length < 4 || validation_path.length < 3) {
+    throw new Error("Wrong constructors")
+  }
 
 
   // Paths of training dataset
   val dialog_act_train_path:String = train_path.head
   val dialog_emotion:String = train_path(1)
   val dialog_train:String = train_path(2)
+  val dialog_pos_json:String = train_path(3)
 
   // Paths of validation dataset
   val validation_act_train_path:String = validation_path.head
@@ -117,6 +124,21 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     // Read topic
     val topic_data = this.update_classificer(this.dialog_act_train_path, 0, mapped_sentence)
     val emotion_data = this.update_classificer(this.dialog_emotion, 1, topic_data)
+
+
+
+    // Read the pos
+    val pos_json_file = Source.fromFile(this.dialog_pos_json)
+//    val pos_json_string:String = pos_json_file.mkString // WTF my laptop does not have enough memory to read the entire file
+    // -ea -Xmx10000m to run
+    val pos_json_string:String = pos_json_file.mkString
+    // close buffersource
+    pos_json_file.close()
+    // use play-json to convert the json string to scala usable datastructures
+    val pos_json:JsValue = Json.parse(pos_json_string)
+    val pos_data = pos_json("sentences")
+    println(pos_data)
+
 
 
     // Write this data down
