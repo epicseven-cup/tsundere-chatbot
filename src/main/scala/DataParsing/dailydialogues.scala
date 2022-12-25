@@ -19,6 +19,38 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
   val validation_train:String = validation_path(2)
 
 
+  def clean_data():Unit = {
+    val file = Source.fromFile(this.dialog_train)
+    val file_line = file.getLines()
+
+    var total:List[String] = List()
+    for (line <- file_line) {
+      val parsed_line: Array[String] = line.split("__eou__")
+      var input_line:String = ""
+      for (line <- parsed_line) {
+//        println("line: " + line)
+        val clean_line:String = line.trim
+//        println("trim line: " + clean_line)
+        input_line = input_line + clean_line
+      }
+      total =  total :+ input_line
+
+    }
+
+    // close the file
+    file.close()
+
+    // Writing to file
+    val write_file = new File("data/ijcnlp_dailydialog/train/train/clean_data.txt")
+    val write_file_buffer = new BufferedWriter(new FileWriter(write_file))
+    for (line <- total){
+      val create_line:String = line + "\n"
+//      println(line)
+      write_file_buffer.write(create_line)
+    }
+    write_file_buffer.close()
+  }
+
   def unique_token_id(token_id_set:mutable.Set[Double]): Option[Double] = {
     var random_id:Double = Random.nextDouble()
     while (token_id_set.contains(random_id)) {

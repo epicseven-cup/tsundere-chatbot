@@ -8,6 +8,7 @@ object Test_dailydialogs {
 
     val dailydialogs:dailydialogues = new dailydialogues(training_dataset, validation_dataset)
     val data = dailydialogs.train_data_parsing()
+    dailydialogs.clean_data()
 //    println(data)
   }
 }
