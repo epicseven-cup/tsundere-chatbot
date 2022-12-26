@@ -8,10 +8,21 @@ def main():
     with open(filename, "r") as file:
         json_data = file.read()
         data = json.loads(json_data)
-
-    return ""
+        sentence = data["sentences"]
+        clean_json = {}
+        for word in sentence:
+            # print("word: " + str(word))
+            sentence_index = word["index"]
+            sentence_data = []
+            sentence_token = word["tokens"]
+            for token in sentence_token:
+                pos = token["pos"]
+                sentence_data.append(pos)
+            clean_json[sentence_index] = sentence_data
+    return clean_json
 
 
 
 if __name__ == "__main__":
-    main()
+    data = main()
+    print(data)
