@@ -136,8 +136,6 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     pos_json_file.close()
     // use play-json to convert the json string to scala usable datastructures
     val pos_json:JsValue = Json.parse(pos_json_string)
-    val pos_data = pos_json("sentences")
-    println(pos_data)
 
 
 
