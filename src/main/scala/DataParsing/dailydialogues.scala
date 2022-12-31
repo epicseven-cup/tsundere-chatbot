@@ -4,7 +4,7 @@ import java.io.{BufferedWriter, File, FileWriter}
 import scala.collection.mutable
 import scala.io.Source
 import scala.util.Random
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 
 
 class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
@@ -35,9 +35,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
       val parsed_line: Array[String] = line.split("__eou__")
       var input_line:String = ""
       for (line <- parsed_line) {
-//        println("line: " + line)
         val clean_line:String = line.trim
-//        println("trim line: " + clean_line)
         input_line = input_line + clean_line
       }
       total =  total :+ input_line
@@ -52,7 +50,6 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     val write_file_buffer = new BufferedWriter(new FileWriter(write_file))
     for (line <- total){
       val create_line:String = line + "\n"
-//      println(line)
       write_file_buffer.write(create_line)
     }
     write_file_buffer.close()
@@ -66,9 +63,9 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     Option(random_id)
   }
 
-  def update_classificer(path:String, index:Int, data:mutable.Map[Int, Map[String, Array[Double]]], id:Int=0): mutable.Map[Int, Map[String, Array[Double]]] = {
+  def update_classificer(path:String, index:Int, data:mutable.Map[Int, mutable.Map[String, Array[Double]]], id:Int=0): mutable.Map[Int, mutable.Map[String, Array[Double]]] = {
     var input_id = id
-    val output_data:mutable.Map[Int, Map[String, Array[Double]]] = data
+    val output_data:mutable.Map[Int, mutable.Map[String, Array[Double]]] = data
     val current_file = Source.fromFile(path)
     val current_file_lines = current_file.getLines()
     for (line <- current_file_lines) {
@@ -85,7 +82,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
   def train_data_parsing(): mutable.Map[Int, Map[String, Array[Double]]] = {
 
     val text_file = Source.fromFile(this.dialog_train)
-    val mapped_sentence:mutable.Map[Int, Map[String, Array[Double]]] = mutable.Map()
+    val mapped_sentence:mutable.Map[Int, mutable.Map[String, Array[Double]]] = mutable.Map()
     // sentence id
     var id:Int = 0
     val text_file_lines = text_file.getLines()
@@ -113,7 +110,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
           }
           tokenized_sentence(word_index) = tokenizer_dictionary(word).get
         }
-        mapped_sentence(id) = Map ("classifiers" -> new Array[Double](2), "tokenized" -> tokenized_sentence)
+        mapped_sentence(id) = mutable.Map ("classifiers" -> new Array[Double](2), "tokenized" -> tokenized_sentence)
         id = id + 1
       }
     }
@@ -129,15 +126,34 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
 
     // Read the pos
     val pos_json_file = Source.fromFile(this.dialog_pos_json)
-//    val pos_json_string:String = pos_json_file.mkString // WTF my laptop does not have enough memory to read the entire file
-    // -ea -Xmx10000m to run
     val pos_json_string:String = pos_json_file.mkString
     // close buffersource
     pos_json_file.close()
     // use play-json to convert the json string to scala usable datastructures
     val pos_json:JsValue = Json.parse(pos_json_string)
+    // Go through the map
+    val pos_size: Int = pos_json.asOpt[JsObject].get.value.size
+    val pos_mapped: mutable.Map[String, Array[Double]] = mutable.Map()
+    // Go through by index
+    for (item <- 0 until pos_size) {
+      val key: String = item.toString
+      val value = pos_json.apply(key)
+      // convert Array[Jsvalue] to Array[Int]
+      val convert_array: Array[Double] = value.as[Array[JsValue]].map((js_value: JsValue) => {
+        val js_int: Double = js_value.as[Double]
+        js_int
+      })
+      pos_mapped(key) = convert_array
+    }
 
+    // Going through the mapped result and add my pos_array into it
 
+    for ((key, value) <- emotion_data){
+      val current_value:mutable.Map[String, Array[Double]] = value
+
+      current_value("Pos") = pos_mapped(key.toString)
+      emotion_data(key) = current_value
+    }
 
     // Write this data down
     val write_file = new File("data/ijcnlp_dailydialog/train/train/parsed_data.txt")
