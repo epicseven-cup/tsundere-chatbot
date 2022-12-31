@@ -79,7 +79,7 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     current_file.close()
     output_data
   }
-  def train_data_parsing(): mutable.Map[Int, Map[String, Array[Double]]] = {
+  def train_data_parsing(): mutable.Map[Int, mutable.Map[String, Array[Double]]] = {
 
     val text_file = Source.fromFile(this.dialog_train)
     val mapped_sentence:mutable.Map[Int, mutable.Map[String, Array[Double]]] = mutable.Map()
@@ -147,10 +147,8 @@ class dailydialogues (train_path:Array[String], validation_path:Array[String]) {
     }
 
     // Going through the mapped result and add my pos_array into it
-
     for ((key, value) <- emotion_data){
       val current_value:mutable.Map[String, Array[Double]] = value
-
       current_value("Pos") = pos_mapped(key.toString)
       emotion_data(key) = current_value
     }

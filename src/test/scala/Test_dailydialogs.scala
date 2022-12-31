@@ -31,16 +31,16 @@ object Test_dailydialogs {
 //    implicit  val pos_jsonReads: Reads[pos_json] = Json.reads[pos_json]
 //    println(Json.fromJson[pos_json](pos_json1))
 
-    val pos_size:Int = pos_json.asOpt[JsObject].get.value.size
-    val pos_mapped:mutable.Map[String, Array[Int]] = mutable.Map()
-    for (item <- 0 until pos_size){
-      val key:String = item.toString
-      val value = pos_json.apply(key)
-      val convert_array:Array[Int] = value.as[Array[JsValue]].map( (js_value:JsValue) => {
-        val js_int:Int = js_value.as[Int]
-        js_int
-      })
-      pos_mapped(key) = convert_array
-    }
+//    val pos_size:Int = pos_json.asOpt[JsObject].get.value.size
+//    val pos_mapped:mutable.Map[String, Array[Int]] = mutable.Map()
+//    for (item <- 0 until pos_size){
+//      val key:String = item.toString
+//      val value = pos_json.apply(key)
+//      val convert_array:Array[Int] = value.as[Array[JsValue]].map( (js_value:JsValue) => {
+//        val js_int:Int = js_value.as[Int]
+//        js_int
+//      })
+//      pos_mapped(key) = convert_array
+//    }
   }
 }
